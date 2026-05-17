@@ -1,0 +1,45 @@
+datasource db {
+  provider = "mysql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Cart {
+  id      Int        @id @default(autoincrement())
+  user_id Int
+  items   CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id         Int  @id @default(autoincrement())
+  cart_id    Int
+  product_id Int
+  quantity   Int
+  cart       Cart @relation(fields: [cart_id], references: [id], onDelete: Cascade)
+
+  @@map("cart_items")
+}
+
+model Order {
+  id         Int           @id @default(autoincrement())
+  user_id    Int
+  created_at DateTime      @default(now()) @db.DateTime(0)
+  details    OrderDetail[]
+
+  @@map("orders")
+}
+
+model OrderDetail {
+  id         Int   @id @default(autoincrement())
+  order_id   Int
+  product_id Int
+  price      Float
+  quantity   Int
+  order      Order @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  @@map("order_details")
+}
